@@ -680,17 +680,10 @@ function stripHtml(value) {
   return value.replace(/<[^>]*>?/g, "");
 }
 
-// x-www-form-urlencoded body for the Netlify Forms POST.
-function encodeForm(data) {
-  return Object.keys(data)
-    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(data[k]))
-    .join("&");
-}
-
 function ContactSection() {
   const [formData, setFormData] = useState({ name: "", email: "", company: "", message: "", tier: "barn-raiser" });
   const [errors, setErrors] = useState({});
-  const [submitError, setSubmitError] = useState("");
+  const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const width = useWindowWidth();
   const isMobile = width < 481;
@@ -718,7 +711,7 @@ function ContactSection() {
     return e;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     const found = validate();
     if (Object.keys(found).length > 0) {
@@ -726,17 +719,33 @@ function ContactSection() {
       return;
     }
     setErrors({});
-    setSubmitError("");
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encodeForm({ "form-name": "sponsor-inquiry", "bot-field": "", ...formData }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Submission failed");
+    setError("");
+
+    // NOTE: use a distinct local name (`params`) — naming this `formData`
+    // would shadow the component state and read undefined off URLSearchParams.
+    const params = new URLSearchParams();
+    params.append("form-name", "sponsor-inquiry");
+    params.append("bot-field", "");
+    params.append("name", formData.name);
+    params.append("email", formData.email);
+    params.append("company", formData.company);
+    params.append("tier", formData.tier);
+    params.append("message", formData.message);
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString(),
+      });
+      if (response.ok) {
         setSubmitted(true);
-      })
-      .catch(() => setSubmitError("Something went wrong sending your inquiry. Please try again."));
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   const inputStyle = (field) => ({
@@ -891,9 +900,9 @@ function ContactSection() {
               {errors.message && <span role="alert" style={errorTextStyle}>{errors.message}</span>}
             </div>
 
-            {submitError && (
+            {error && (
               <div role="alert" style={{ ...errorTextStyle, marginBottom: 16, fontSize: 13 }}>
-                {submitError}
+                {error}
               </div>
             )}
 
