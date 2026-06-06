@@ -671,22 +671,81 @@ function KitsSection() {
   );
 }
 
+// Field length limits (defense-in-depth: enforced in handler + maxLength attr).
+const FIELD_MAX = { name: 100, email: 150, company: 150, message: 1000 };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Remove any HTML tags / angle-bracket content before it ever reaches state.
+function stripHtml(value) {
+  return value.replace(/<[^>]*>?/g, "");
+}
+
+// x-www-form-urlencoded body for the Netlify Forms POST.
+function encodeForm(data) {
+  return Object.keys(data)
+    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(data[k]))
+    .join("&");
+}
+
 function ContactSection() {
   const [formData, setFormData] = useState({ name: "", email: "", company: "", message: "", tier: "barn-raiser" });
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const width = useWindowWidth();
   const isMobile = width < 481;
 
-  const handleSubmit = (e) => {
-    if (e) e.preventDefault();
-    setSubmitted(true);
+  const handleChange = (field) => (e) => {
+    let value = e.target.value;
+    if (field !== "tier") {
+      value = stripHtml(value).slice(0, FIELD_MAX[field]);
+    }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
-  const inputStyle = {
-    width: "100%", padding: "12px 14px", borderRadius: 8, fontSize: 16,
-    border: `1px solid ${COLORS.creamDark}`, outline: "none",
-    background: COLORS.cream, boxSizing: "border-box", minHeight: 44,
+  const validate = () => {
+    const e = {};
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    if (!name) e.name = "Please enter your name.";
+    else if (name.length > FIELD_MAX.name) e.name = `Keep this under ${FIELD_MAX.name} characters.`;
+    if (!email) e.email = "Please enter your email.";
+    else if (!EMAIL_RE.test(email)) e.email = "Please enter a valid email address.";
+    else if (email.length > FIELD_MAX.email) e.email = `Keep this under ${FIELD_MAX.email} characters.`;
+    if (formData.company.length > FIELD_MAX.company) e.company = `Keep this under ${FIELD_MAX.company} characters.`;
+    if (formData.message.length > FIELD_MAX.message) e.message = `Keep this under ${FIELD_MAX.message} characters.`;
+    return e;
   };
+
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    const found = validate();
+    if (Object.keys(found).length > 0) {
+      setErrors(found);
+      return;
+    }
+    setErrors({});
+    setSubmitError("");
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encodeForm({ "form-name": "sponsor-inquiry", "bot-field": "", ...formData }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Submission failed");
+        setSubmitted(true);
+      })
+      .catch(() => setSubmitError("Something went wrong sending your inquiry. Please try again."));
+  };
+
+  const inputStyle = (field) => ({
+    width: "100%", padding: "12px 14px", borderRadius: 8, fontSize: 16,
+    border: `1px solid ${errors[field] ? "#B00020" : COLORS.creamDark}`, outline: "none",
+    background: COLORS.cream, boxSizing: "border-box", minHeight: 44,
+  });
+
+  const errorTextStyle = { color: "#B00020", fontSize: 12, fontWeight: 600, marginTop: 6, display: "block" };
 
   return (
     <section id="contact" style={{
@@ -719,58 +778,93 @@ function ContactSection() {
             </p>
           </div>
         ) : (
-          <div style={{
-            background: COLORS.white, borderRadius: 16, padding: isMobile ? "28px 20px" : "40px 36px",
-            border: `1px solid ${COLORS.creamDark}`,
-          }}>
+          <form
+            name="sponsor-inquiry"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            onSubmit={handleSubmit}
+            noValidate
+            style={{
+              background: COLORS.white, borderRadius: 16, padding: isMobile ? "28px 20px" : "40px 36px",
+              border: `1px solid ${COLORS.creamDark}`,
+            }}
+          >
+            {/* Netlify needs this hidden field to map the JS-submitted POST to the form. */}
+            <input type="hidden" name="form-name" value="sponsor-inquiry" />
+            {/* Honeypot: real users never see or fill this; bots that do are dropped. */}
+            <p style={{ display: "none" }}>
+              <label>
+                Don&apos;t fill this out if you&apos;re human:
+                <input name="bot-field" tabIndex={-1} autoComplete="off" />
+              </label>
+            </p>
+
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 16 }}>
               <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
+                <label htmlFor="name" style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
                   Name
                 </label>
                 <input
+                  id="name"
+                  name="name"
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={handleChange("name")}
+                  maxLength={FIELD_MAX.name}
                   placeholder="Your name"
-                  style={inputStyle}
+                  aria-invalid={!!errors.name}
+                  style={inputStyle("name")}
                 />
+                {errors.name && <span role="alert" style={errorTextStyle}>{errors.name}</span>}
               </div>
               <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
+                <label htmlFor="email" style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
                   Email
                 </label>
                 <input
+                  id="email"
+                  name="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={handleChange("email")}
+                  maxLength={FIELD_MAX.email}
                   placeholder="you@company.com"
-                  style={inputStyle}
+                  aria-invalid={!!errors.email}
+                  style={inputStyle("email")}
                 />
+                {errors.email && <span role="alert" style={errorTextStyle}>{errors.email}</span>}
               </div>
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
+              <label htmlFor="company" style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
                 Company / brand
               </label>
               <input
+                id="company"
+                name="company"
                 type="text"
                 value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                onChange={handleChange("company")}
+                maxLength={FIELD_MAX.company}
                 placeholder="Your company name"
-                style={inputStyle}
+                aria-invalid={!!errors.company}
+                style={inputStyle("company")}
               />
+              {errors.company && <span role="alert" style={errorTextStyle}>{errors.company}</span>}
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
+              <label htmlFor="tier" style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
                 Sponsorship tier interest
               </label>
               <select
+                id="tier"
+                name="tier"
                 value={formData.tier}
-                onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
-                style={{ ...inputStyle, cursor: "pointer" }}
+                onChange={handleChange("tier")}
+                style={{ ...inputStyle("tier"), cursor: "pointer" }}
               >
                 <option value="barn-raiser">Barn Raiser ($500 – $2,499)</option>
                 <option value="hitching-post">Hitching Post ($2,500 – $9,999)</option>
@@ -780,20 +874,31 @@ function ContactSection() {
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
+              <label htmlFor="message" style={{ fontSize: 13, fontWeight: 600, color: COLORS.black, display: "block", marginBottom: 6 }}>
                 Message
               </label>
               <textarea
+                id="message"
+                name="message"
                 value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                onChange={handleChange("message")}
+                maxLength={FIELD_MAX.message}
                 rows={4}
                 placeholder="Tell us about your brand and how you'd like to partner..."
-                style={{ ...inputStyle, minHeight: 110, resize: "vertical", fontFamily: "inherit" }}
+                aria-invalid={!!errors.message}
+                style={{ ...inputStyle("message"), minHeight: 110, resize: "vertical", fontFamily: "inherit" }}
               />
+              {errors.message && <span role="alert" style={errorTextStyle}>{errors.message}</span>}
             </div>
 
+            {submitError && (
+              <div role="alert" style={{ ...errorTextStyle, marginBottom: 16, fontSize: 13 }}>
+                {submitError}
+              </div>
+            )}
+
             <button
-              onClick={handleSubmit}
+              type="submit"
               style={{
                 width: "100%", padding: "15px", borderRadius: 8, border: "none",
                 background: COLORS.gold, color: COLORS.black, fontWeight: 700,
@@ -802,7 +907,7 @@ function ContactSection() {
             >
               Submit inquiry
             </button>
-          </div>
+          </form>
         )}
       </div>
     </section>
