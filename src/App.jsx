@@ -695,6 +695,7 @@ function ContactSection() {
     }
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
+    if (error) setError("");
   };
 
   const validate = () => {
@@ -707,7 +708,9 @@ function ContactSection() {
     else if (!EMAIL_RE.test(email)) e.email = "Please enter a valid email address.";
     else if (email.length > FIELD_MAX.email) e.email = `Keep this under ${FIELD_MAX.email} characters.`;
     if (formData.company.length > FIELD_MAX.company) e.company = `Keep this under ${FIELD_MAX.company} characters.`;
-    if (formData.message.length > FIELD_MAX.message) e.message = `Keep this under ${FIELD_MAX.message} characters.`;
+    const message = formData.message.trim();
+    if (!message) e.message = "Please enter a message.";
+    else if (formData.message.length > FIELD_MAX.message) e.message = `Keep this under ${FIELD_MAX.message} characters.`;
     return e;
   };
 
@@ -716,6 +719,10 @@ function ContactSection() {
     const found = validate();
     if (Object.keys(found).length > 0) {
       setErrors(found);
+      // Required-field guard: show a summary banner when a required field is empty.
+      if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+        setError("Please fill in all required fields.");
+      }
       return;
     }
     setErrors({});
@@ -901,7 +908,7 @@ function ContactSection() {
             </div>
 
             {error && (
-              <div role="alert" style={{ ...errorTextStyle, marginBottom: 16, fontSize: 13 }}>
+              <div role="alert" style={{ ...errorTextStyle, color: "#c0392b", marginBottom: 16, fontSize: 13 }}>
                 {error}
               </div>
             )}

@@ -47,6 +47,17 @@
 </head>
 
 <body>
+  <!-- Hidden static form: lets Netlify detect the form at build time (the real
+       form is rendered by React and submitted via fetch). Never shown to users. -->
+  <form name="sponsor-inquiry" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <input type="text" name="company" />
+    <select name="tier"></select>
+    <textarea name="message"></textarea>
+    <input type="text" name="bot-field" />
+  </form>
+
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
