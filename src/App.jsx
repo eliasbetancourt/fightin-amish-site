@@ -302,8 +302,9 @@ function HeroSection() {
         display: isMobile ? "grid" : "flex",
         gridTemplateColumns: isMobile ? "1fr 1fr" : undefined,
         gap: isMobile ? 28 : 48, marginTop: isMobile ? 48 : 64,
-        flexWrap: "wrap", justifyContent: "center",
-        width: isMobile ? "100%" : "auto", maxWidth: 360,
+        flexWrap: isMobile ? "wrap" : "nowrap", justifyContent: "center",
+        width: isMobile ? "100%" : "auto",
+        maxWidth: isMobile ? 360 : "none",
       }}>
         {[
           { label: "Prize pool", value: "$1M" },
@@ -311,8 +312,8 @@ function HeroSection() {
           { label: "Teams", value: "48" },
           { label: "Location", value: "Cary, NC" },
         ].map((s) => (
-          <div key={s.label} style={{ textAlign: "center" }}>
-            <div style={{ fontSize: isMobile ? 24 : 28, fontWeight: 800, color: COLORS.gold, fontFamily: "'Playfair Display', Georgia, serif" }}>{s.value}</div>
+          <div key={s.label} style={{ textAlign: "center", flexShrink: 0 }}>
+            <div style={{ fontSize: isMobile ? 24 : 28, fontWeight: 800, color: COLORS.gold, fontFamily: "'Playfair Display', Georgia, serif", whiteSpace: "nowrap" }}>{s.value}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 4 }}>{s.label}</div>
           </div>
         ))}
