@@ -122,12 +122,11 @@ function Navbar({ activeSection }) {
         justifyContent: "space-between", height: 64,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: "50%", background: COLORS.gold,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: 800, fontSize: 16, color: COLORS.black, fontFamily: "'Playfair Display', Georgia, serif",
-            flexShrink: 0,
-          }}>FA</div>
+          <img
+            src="/android-chrome-192x192.png"
+            alt="Fightin' Amish logo"
+            style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+          />
           <span style={{ color: COLORS.gold, fontWeight: 700, fontSize: isMobile ? 14 : 16, letterSpacing: "0.04em", fontFamily: "'Playfair Display', Georgia, serif", whiteSpace: "nowrap" }}>
             THE FIGHTIN' AMISH
           </span>
@@ -242,7 +241,7 @@ function HeroSection() {
         marginBottom: isMobile ? 24 : 32, background: "rgba(197,165,90,0.08)",
         boxShadow: `0 0 60px rgba(197,165,90,0.15)`, flexShrink: 0,
       }}>
-        <span style={{ fontSize: isMobile ? 36 : 48, fontWeight: 800, color: COLORS.gold, fontFamily: "'Playfair Display', Georgia, serif" }}>FA</span>
+        <img src="/android-chrome-192x192.png" alt="Fightin' Amish logo" style={{ width: isMobile ? 88 : 120, height: isMobile ? 88 : 120, borderRadius: "50%", objectFit: "cover" }} />
       </div>
 
       <div style={{
@@ -498,7 +497,7 @@ function SponsorsSection() {
   const sponsors = [
     {
       name: "Country Lane Gazebos",
-      url: "gazebo.com",
+      url: "https://www.gazebo.com",
       description: "Amish-crafted gazebos, pergolas & pavilions. Family-owned since 1994, Lancaster County, PA.",
       tier: "Founding partner",
       tagline: "Official presenting sponsor",
@@ -549,7 +548,7 @@ function SponsorsSection() {
                 fontFamily: "'Playfair Display', Georgia, serif",
               }}>{s.name}</h3>
               {s.url && (
-                <div style={{ fontSize: 13, color: COLORS.gold, marginBottom: 12 }}>{s.url}</div>
+                <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: COLORS.gold, marginBottom: 12, display: "block", textDecoration: "none" }}>{s.url.replace("https://www.", "")}</a>
               )}
               <p style={{ fontSize: 14, lineHeight: 1.6, color: "rgba(26,26,26,0.6)", margin: "0 0 16px" }}>
                 {s.description}
@@ -651,7 +650,7 @@ function KitsSection() {
             alignItems: "center", justifyContent: "center", marginBottom: 24,
             border: "2px solid rgba(255,255,255,0.2)",
           }}>
-            <span style={{ fontSize: 42, fontWeight: 800, color: COLORS.white, fontFamily: "'Playfair Display', Georgia, serif" }}>FA</span>
+            <img src="/android-chrome-192x192.png" alt="Fightin' Amish logo" style={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover" }} />
           </div>
           <h3 style={{ fontSize: 28, fontWeight: 800, color: COLORS.white, margin: "0 0 8px", fontFamily: "'Playfair Display', Georgia, serif" }}>
             {kits[activeKit].name} kit
@@ -942,11 +941,7 @@ function Footer() {
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 20,
         }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: "50%", background: COLORS.gold,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: 800, fontSize: 14, color: COLORS.black, fontFamily: "'Playfair Display', Georgia, serif",
-          }}>FA</div>
+          <img src="/android-chrome-192x192.png" alt="Fightin' Amish logo" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
           <span style={{ color: COLORS.gold, fontWeight: 700, fontSize: 14, letterSpacing: "0.04em", fontFamily: "'Playfair Display', Georgia, serif" }}>
             THE FIGHTIN' AMISH
           </span>
