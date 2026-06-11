@@ -344,7 +344,7 @@ function AboutSection() {
           {[
             {
               title: "The mission",
-              text: "We're assembling a team of elite players from Lancaster County and beyond to compete in TST 2027. The 7v7 Soccer World Championship with a $1 million winner-take-all prize. We need $50,000 in sponsorship by September to secure our spot.",
+              text: "We're assembling a team of elite players from Lancaster County and beyond to compete in TST 2027. The 7v7 Soccer World Championship with a $1 million winner-take-all prize. We need $60,000 in sponsorship by September to secure our spot.",
               icon: "⚽",
             },
             {
@@ -390,7 +390,7 @@ function FundraisingSection() {
   const width = useWindowWidth();
   const isMobile = width < 481;
   const raised = 5000;
-  const goal = 50000;
+  const goal = 60000;
 
   const tiers = [
     { name: "Barn raiser", amount: "$500 – $2,499", perks: "Logo on website, social media shoutout, team updates", color: "#8B6E3E" },
@@ -409,10 +409,10 @@ function FundraisingSection() {
             Fundraising
           </div>
           <h2 style={{ fontSize: isMobile ? 26 : 38, fontWeight: 800, color: COLORS.white, margin: "0 0 16px", fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Road to <span style={{ color: COLORS.gold }}>$50,000</span>
+            Road to <span style={{ color: COLORS.gold }}>$60,000</span>
           </h2>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: isMobile ? 15 : 16, maxWidth: 500, margin: "0 auto" }}>
-            We need to raise $50K before September to lock in our TST 2027 application. Every dollar gets us closer.
+            We need to raise $60K before September to lock in our TST 2027 application. Every dollar gets us closer.
           </p>
         </div>
 
@@ -437,7 +437,7 @@ function FundraisingSection() {
             </div>
             <div style={{ textAlign: isMobile ? "left" : "right" }}>
               <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Goal</div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "rgba(255,255,255,0.6)" }}>$50,000</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "rgba(255,255,255,0.6)" }}>$60,000</div>
             </div>
           </div>
           <ProgressBar current={raised} goal={goal} />
