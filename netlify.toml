@@ -19,4 +19,4 @@
     # Deny powerful browser features the site never uses.
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     # CSP via HTTP header so frame-ancestors is enforced (it is ignored in a <meta> tag).
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-brG6aNG4KdD5tiAvNWIHEM1UeEO/pIx9ViqXCUJAeR0='; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; img-src 'self' data: https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"

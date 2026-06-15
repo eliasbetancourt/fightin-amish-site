@@ -7,7 +7,7 @@
 
   <!-- Security: Content Security Policy -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
+    content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-brG6aNG4KdD5tiAvNWIHEM1UeEO/pIx9ViqXCUJAeR0='; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; img-src 'self' data: https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 
   <!-- SEO -->
   <meta name="robots" content="index, follow" />
@@ -44,6 +44,15 @@
   <meta name="twitter:image" content="https://fightinamish.netlify.app/og-image.png" />
 
   <title>The Fightin' Amish | TST 2027</title>
+
+  <!-- Google Analytics 4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HV9SS9X2N8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HV9SS9X2N8');
+  </script>
 </head>
 
 <body>

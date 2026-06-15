@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
+// Fire a Google Analytics 4 custom event. Safe no-op if gtag hasn't loaded
+// (e.g. blocked by an ad blocker or still initializing).
+const trackEvent = (eventName, params = {}) => {
+  if (window.gtag) {
+    window.gtag('event', eventName, params);
+  }
+};
+
 // Returns the current window width and updates on resize (debounced).
 function useWindowWidth() {
   const [width, setWidth] = useState(
@@ -273,7 +281,9 @@ function HeroSection() {
         flexDirection: isMobile ? "column" : "row",
         width: isMobile ? "100%" : "auto",
       }}>
-        <a href="#contact" style={{
+        <a href="#contact"
+          onClick={() => trackEvent('hero_cta_click', { button: 'become_a_sponsor' })}
+          style={{
           background: COLORS.gold, color: COLORS.black, padding: "15px 36px",
           borderRadius: 8, fontWeight: 700, fontSize: 15, textDecoration: "none",
           letterSpacing: "0.03em", transition: "transform 0.2s, box-shadow 0.2s",
@@ -511,6 +521,28 @@ function SponsorsSection() {
     },
   ];
 
+  // Fire a single "sponsor section viewed" impression event the first time the
+  // sponsor cards are at least 50% visible in the viewport, once per page load.
+  const cardsRef = useRef(null);
+  const viewedRef = useRef(false);
+
+  useEffect(() => {
+    const node = cardsRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !viewedRef.current) {
+          viewedRef.current = true;
+          trackEvent('sponsor_section_viewed', { section: 'sponsors' });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="sponsors" style={{
       padding: isMobile ? "48px 16px" : "100px 24px", background: COLORS.cream,
@@ -528,7 +560,7 @@ function SponsorsSection() {
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 24, marginBottom: isMobile ? 32 : 48 }}>
+        <div ref={cardsRef} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 24, marginBottom: isMobile ? 32 : 48 }}>
           {sponsors.map((s) => (
             <div
               key={s.name}
@@ -543,12 +575,16 @@ function SponsorsSection() {
                 fontSize: 11, fontWeight: 700, padding: "4px 14px", borderRadius: 20,
                 textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16,
               }}>{s.tagline}</div>
-              <h3 style={{
+              <h3
+                onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'name' })}
+                style={{
                 fontSize: 22, fontWeight: 800, color: COLORS.black, margin: "0 0 6px",
                 fontFamily: "'Playfair Display', Georgia, serif",
               }}>{s.name}</h3>
               {s.url && (
-                <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: COLORS.gold, marginBottom: 12, display: "block", textDecoration: "none" }}>{s.url.replace("https://www.", "")}</a>
+                <a href={s.url} target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'link' })}
+                  style={{ fontSize: 13, color: COLORS.gold, marginBottom: 12, display: "block", textDecoration: "none" }}>{s.url.replace("https://www.", "")}</a>
               )}
               <p style={{ fontSize: 14, lineHeight: 1.6, color: "rgba(26,26,26,0.6)", margin: "0 0 16px" }}>
                 {s.description}
@@ -577,7 +613,9 @@ function SponsorsSection() {
             Join our roster of sponsors and get your brand in front of millions on NBC Sports.
             Sponsorship starts at $500.
           </p>
-          <a href="#contact" style={{
+          <a href="#contact"
+            onClick={() => trackEvent('sponsor_cta_click', { location: 'sponsor_section' })}
+            style={{
             background: COLORS.gold, color: COLORS.black, padding: "13px 32px",
             borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none",
             display: "inline-flex", alignItems: "center", justifyContent: "center",
@@ -622,7 +660,10 @@ function KitsSection() {
           {kits.map((kit, i) => (
             <button
               key={kit.name}
-              onClick={() => setActiveKit(i)}
+              onClick={() => {
+                setActiveKit(i);
+                trackEvent('kit_viewed', { kit: kit.name.toLowerCase() });
+              }}
               style={{
                 padding: isMobile ? "10px 16px" : "10px 28px", borderRadius: 8, fontWeight: 700, fontSize: 14,
                 cursor: "pointer", transition: "all 0.2s", border: "none",
@@ -746,6 +787,10 @@ function ContactSection() {
       });
       if (response.ok) {
         setSubmitted(true);
+        trackEvent('sponsor_inquiry_submitted', {
+          tier: formData.tier,
+          company: formData.company,
+        });
       } else {
         setError("Something went wrong. Please try again.");
       }
