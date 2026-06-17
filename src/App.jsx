@@ -284,14 +284,14 @@ function HeroSection() {
         <a href="#contact"
           onClick={() => trackEvent('hero_cta_click', { button: 'become_a_sponsor' })}
           style={{
-          background: COLORS.gold, color: COLORS.black, padding: "15px 36px",
-          borderRadius: 8, fontWeight: 700, fontSize: 15, textDecoration: "none",
-          letterSpacing: "0.03em", transition: "transform 0.2s, box-shadow 0.2s",
-          boxShadow: `0 4px 20px rgba(197,165,90,0.3)`,
-          textAlign: "center", width: isMobile ? "100%" : "auto",
-          minHeight: 44, boxSizing: "border-box",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
+            background: COLORS.gold, color: COLORS.black, padding: "15px 36px",
+            borderRadius: 8, fontWeight: 700, fontSize: 15, textDecoration: "none",
+            letterSpacing: "0.03em", transition: "transform 0.2s, box-shadow 0.2s",
+            boxShadow: `0 4px 20px rgba(197,165,90,0.3)`,
+            textAlign: "center", width: isMobile ? "100%" : "auto",
+            minHeight: 44, boxSizing: "border-box",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
           Become a sponsor
         </a>
         <a href="#about" style={{
@@ -571,9 +571,9 @@ function SponsorsSection() {
               <h3
                 onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'name' })}
                 style={{
-                fontSize: 22, fontWeight: 800, color: COLORS.black, margin: "0 0 6px",
-                fontFamily: "'Playfair Display', Georgia, serif",
-              }}>{s.name}</h3>
+                  fontSize: 22, fontWeight: 800, color: COLORS.black, margin: "0 0 6px",
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                }}>{s.name}</h3>
               {s.url && (
                 <a href={s.url} target="_blank" rel="noopener noreferrer"
                   onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'link' })}
@@ -632,11 +632,11 @@ function SponsorsSection() {
           <a href="#contact"
             onClick={() => trackEvent('sponsor_cta_click', { location: 'sponsor_section' })}
             style={{
-            background: COLORS.gold, color: COLORS.black, padding: "13px 32px",
-            borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            minHeight: 44, boxSizing: "border-box",
-          }}>
+              background: COLORS.gold, color: COLORS.black, padding: "13px 32px",
+              borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              minHeight: 44, boxSizing: "border-box",
+            }}>
             Get in touch
           </a>
         </div>
@@ -650,9 +650,9 @@ function KitsSection() {
   const width = useWindowWidth();
   const isMobile = width < 481;
   const kits = [
-    { name: "Home", desc: "Gold & black — classic Lancaster", bg: `linear-gradient(135deg, ${COLORS.goldLight}, ${COLORS.gold})` },
-    { name: "Away", desc: "Black & gold — night edition", bg: `linear-gradient(135deg, ${COLORS.blackSoft}, ${COLORS.black})` },
-    { name: "Third", desc: "Wood grain — the signature look", bg: `linear-gradient(135deg, ${COLORS.brown}, ${COLORS.brownLight})` },
+    { name: "Home", desc: "Gold & black", bg: `linear-gradient(135deg, ${COLORS.goldLight}, ${COLORS.gold})` },
+    { name: "Away", desc: "Black & gold", bg: `linear-gradient(135deg, ${COLORS.blackSoft}, ${COLORS.black})` },
+    { name: "Third", desc: "Wood grain", bg: `linear-gradient(135deg, ${COLORS.brown}, ${COLORS.brownLight})` },
   ];
 
   return (
