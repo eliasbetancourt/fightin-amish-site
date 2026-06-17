@@ -512,13 +512,6 @@ function SponsorsSection() {
       tier: "Founding partner",
       tagline: "Official presenting sponsor",
     },
-    {
-      name: "Barn Burner Tools",
-      url: "",
-      description: "Quality tools for the hardworking. Proudly supporting Lancaster County athletics.",
-      tier: "Cornerstone",
-      tagline: "Kit sponsor",
-    },
   ];
 
   // Fire a single "sponsor section viewed" impression event the first time the
@@ -560,14 +553,14 @@ function SponsorsSection() {
           </p>
         </div>
 
-        <div ref={cardsRef} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 24, marginBottom: isMobile ? 32 : 48 }}>
+        <div ref={cardsRef} style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, marginBottom: isMobile ? 32 : 48 }}>
           {sponsors.map((s) => (
             <div
               key={s.name}
               style={{
                 background: COLORS.white, borderRadius: 16, padding: "36px 28px",
                 border: `1px solid ${COLORS.creamDark}`, textAlign: "center",
-                position: "relative",
+                position: "relative", maxWidth: 560, margin: "0 auto", width: "100%",
               }}
             >
               <div style={{
@@ -595,6 +588,29 @@ function SponsorsSection() {
                 padding: "6px 16px", border: `1px solid ${COLORS.gold}`, borderRadius: 6,
                 display: "inline-block",
               }}>{s.tier}</div>
+              {s.name === "Country Lane Gazebos" && (
+                <div
+                  onClick={() => trackEvent('promo_code_viewed', { sponsor: 'Country Lane Gazebos', code: 'FightinAmish26' })}
+                  onMouseUp={() => trackEvent('promo_code_viewed', { sponsor: 'Country Lane Gazebos', code: 'FightinAmish26' })}
+                  style={{
+                    marginTop: 16,
+                    background: "rgba(197,165,90,0.08)",
+                    border: "1px solid rgba(197,165,90,0.4)",
+                    borderRadius: 8,
+                    padding: "12px 16px",
+                    textAlign: "left",
+                  }}
+                >
+                  <div style={{ fontSize: 10, color: "#C5A55A", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>
+                    Promo Code
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: 13, color: "rgba(26,26,26,0.7)", lineHeight: 1.6 }}>
+                    Call in or request a quote from Country Lane Gazebos and use code{" "}
+                    <span style={{ color: "#C5A55A", fontWeight: 700, fontSize: 15 }}>FightinAmish26</span>
+                    {" "}to save on your next structure, furniture set, or accessories.
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>
