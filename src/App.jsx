@@ -570,14 +570,14 @@ function SponsorsSection() {
                 textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16,
               }}>{s.tagline}</div>
               <h3
-                onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'name' })}
+                onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'name_click' })}
                 style={{
                   fontSize: 22, fontWeight: 800, color: COLORS.black, margin: "0 0 6px",
                   fontFamily: "'Playfair Display', Georgia, serif",
                 }}>{s.name}</h3>
               {s.url && (
                 <a href={s.url} target="_blank" rel="noopener noreferrer"
-                  onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'link' })}
+                  onClick={() => trackEvent('sponsor_click', { sponsor_name: s.name, click_type: 'website_link' })}
                   style={{ fontSize: 13, color: COLORS.gold, marginBottom: 12, display: "block", textDecoration: "none" }}>{s.url.replace("https://www.", "")}</a>
               )}
               <p style={{ fontSize: 14, lineHeight: 1.6, color: "rgba(26,26,26,0.6)", margin: "0 0 16px" }}>
