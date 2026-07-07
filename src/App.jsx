@@ -1009,9 +1009,7 @@ function Footer() {
         </div>
 
         <div style={{ display: "flex", gap: isMobile ? 16 : 32, justifyContent: "center", flexWrap: "wrap", marginBottom: 24 }}>
-          {["Twitter/X", "Instagram", "TikTok", "YouTube"].map((s) => (
-            <span key={s} style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: "8px 4px" }}>{s}</span>
-          ))}
+          <a href="https://www.instagram.com/thefightinamish_/" target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", textDecoration: "none", padding: "8px 4px" }}>Instagram</a>
         </div>
 
         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>
