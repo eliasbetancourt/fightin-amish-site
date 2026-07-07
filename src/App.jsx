@@ -504,6 +504,7 @@ function FundraisingSection() {
 function SponsorsSection() {
   const width = useWindowWidth();
   const isMobile = width < 481;
+  const [copied, setCopied] = useState(false);
   const sponsors = [
     {
       name: "Country Lane Gazebos",
@@ -606,7 +607,16 @@ function SponsorsSection() {
                   </div>
                   <p style={{ margin: "0 0 8px", fontSize: 13, color: "rgba(26,26,26,0.7)", lineHeight: 1.6 }}>
                     Call in or request a quote from Country Lane Gazebos and use code{" "}
-                    <span style={{ color: "#C5A55A", fontWeight: 700, fontSize: 15 }}>FightinAmish26</span>
+                    <span
+                      title="Click to copy"
+                      style={{ color: copied ? "#4CAF50" : "#C5A55A", fontWeight: 700, fontSize: 15, cursor: "pointer" }}
+                      onClick={() => {
+                        navigator.clipboard.writeText('FightinAmish26');
+                        trackEvent('promo_code_click', { sponsor: 'Country Lane Gazebos', code: 'FightinAmish26' });
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 1500);
+                      }}
+                    >{copied ? "Copied!" : "FightinAmish26"}</span>
                     {" "}to save on your next structure, furniture set, or accessories.
                   </p>
                 </div>
